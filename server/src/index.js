@@ -1,11 +1,20 @@
 import express from 'express';
 import { createServer } from 'http';
-import { PubSub } from 'apollo-server';
+import { MQTTPubSub } from 'graphql-mqtt-subscriptions';
 import { ApolloServer, gql } from 'apollo-server-express';
+import { connect } from 'mqtt';
 
 const app = express();
 
-const pubsub = new PubSub();
+const client = connect('mqtt://test.mosquitto.org', {
+  reconnectPeriod: 1000,
+});
+ 
+export const pubsub = new MQTTPubSub({
+  client,
+});
+
+
 const MESSAGE_CREATED = 'MESSAGE_CREATED';
 
 const typeDefs = gql`
